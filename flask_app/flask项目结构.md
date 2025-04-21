@@ -1,0 +1,11 @@
+- app/routes/：将不同功能模块的路由分开管理。
+    - main.py：主模块的路由。
+    - auth.py：认证相关的路由。
+- app/models/：管理数据模型，通常与数据库操作相关。
+    - user.py：用户模型。
+- app/templates/：存放 HTML 模板文件。
+- app/static/：存放静态文件，如 CSS 和 JavaScript。
+- migrations/：数据库迁移文件，通常与 SQLAlchemy 相关。
+- config.py：配置文件，用于定义应用程序的配置选项。
+- requirements.txt：依赖包列表，用于安装应用程序所需的依赖。
+- run.py：启动应用程序的脚本。
