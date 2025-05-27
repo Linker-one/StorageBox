@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StorageBox</title>
+    <link rel="stylesheet" href="../static/css/window.css">
+</head>
+<body>
+    <div class="file-explorer">
+        <!-- 标题栏 -->
+        <div class="title-bar">
+            <div class="title">StorageBox</div>
+            <div class="window-controls">
+                <button>…</button>
+                <button class="new">+</button>
+                <button class="close">×</button>
+            </div>
+        </div>
+
+        <!-- 功能区 -->
+        <div class="toolbar">
+            <button class="copy"></button>              
+            <button class="cut"></button>     
+            <button class="paste"></button>
+            <button class="create-file"></button>
+            <button class="create-dir"></button>
+            <button class="rename"></button>
+            <button class="delete"></button>
+            <button class="max-view"></button>
+            <button class="mid-view"></button>
+            <button class="min-view active"></button>
+            <button class="select"></button>
+            <button class="select-all"></button>
+        </div>
+
+        <!-- 地址栏 -->
+        <div class="address-bar">
+            <div class="dir-navigation">
+                <button class="back"></button>
+                <button class="forward"></button>
+                <button class="parent"></button>
+                <button class="refresh"></button>
+            </div>
+            <div>
+                <input class="address-path" type="text" placeholder="输入地址" autofocus></input>
+            </div>
+            <div>
+                <input class="search-bar" type="text" placeholder="🔍搜索"></input>
+            </div>
+        </div>
+
+        <!-- 主内容区 -->
+        <div class="main-container">
+            <!-- 左侧边栏折叠按钮 -->
+            <div class="sidebar-left-toggle" id="left-toggle">
+                <i class="fas fa-angle-right"></i>
+            </div>
+            <!-- 左侧边栏  -->
+            <div class="sidebar left-sidebar collapsed">
+                {% for disk_info in disk_info_list %}
+                    <div class="sidebar-content">
+                        <div class="content-toggle"></div>
+                        <div class="sidebar-item">本地磁盘({{disk_info.device[0]}}:)</div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- 内容区域 -->
+            <div class="content-area">
+                <div class="content-areas">
+                    <div class="file-list-header">
+                        <div class="header-name">名称</div>
+                        <div class="header-modified">修改日期</div>
+                        <div class="header-type">类型</div>
+                        <div class="header-size">大小</div>
+                    </div>
+    
+                    <div class="file-list"></div>
+                </div>
+            </div>
+
+            <!-- 右侧边栏折叠按钮 -->
+            <div class="sidebar-right-toggle" id="right-toggle">
+                <i class="fas fa-angle-left"></i>
+            </div>
+            <!-- 右侧边栏 (默认折叠) -->
+            <div class="sidebar right-sidebar collapsed">
+                <div class="sidebar-content">
+                    <div class="sidebar-section">
+                        <div class="sidebar-title">详情</div>
+                        <div class="sidebar-info">
+                            <div class="info-title">名称:</div>
+                            <div class="info-value">参考.png</div>
+                        </div>
+                        <div class="sidebar-info">
+                            <div class="info-title">类型:</div>
+                            <div class="info-value">PNG 文件</div>
+                        </div>
+                        <div class="sidebar-info">
+                            <div class="info-title">修改日期:</div>
+                            <div class="info-value">2025/4/26 2:18</div>
+                        </div>
+                        <div class="sidebar-info">
+                            <div class="info-title">大小:</div>
+                            <div class="info-value">217 KB</div>
+                        </div>
+                    </div>
+
+                    <div class="sidebar-section">
+                        <div class="sidebar-title">预览</div>
+                        <div class="file-preview">
+                            <img src="" alt="预览图" class="preview-image">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 状态栏 -->
+        <div class="status-bar">
+            <div class="status-info">0 个项目</div>
+            <div class="status-selected">选中 0 个项目</div>
+            <div class="status-size">0 KB</div>
+        </div>
+    </div>
+
+    <!-- 引入 JavaScript -->
+    <script src="{{ url_for('static', filename='js/app.js') }}" type="module"></script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+js/
+├── globals.js          # 全局变量定义
+├── utils.js            # 工具函数
+├── clipboard.js        # 剪贴板操作
+├── view-mode.js        # 视图模式管理
+├── selection.js        # 文件选择功能
+├── file-operations.js  # 文件操作(创建/重命名/删除)
+├── navigation.js       # 导航相关(前进/后退/刷新)
+├── search.js           # 搜索功能
+├── sidebar.js          # 侧边栏功能
+├── file-list.js        # 文件列表显示
+├── status-bar.js       # 状态栏显示
+├── image-viewer.js     # 图片查看器
+├── api-service.js      # API请求封装
+└── app.js              # 主应用入口
