@@ -5,7 +5,10 @@ from . import file_dir
 bp = Blueprint('update_path', __name__, url_prefix='/')
 
 # 允许的图片扩展名
-ALLOWED_EXTENSIONS = {'.mp4', 'png', 'jpg', 'jpeg', 'gif', 'bmp', 'tiff', 'webp'}
+VIDEO_TYPES = {'mp4', 'webm', 'ogg', 'mov', 'avi', 'mkv', 'flv'}
+IMAGE_TYPES = {'jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff', 'webp'}
+ALLOWED_EXTENSIONS = VIDEO_TYPES.union(IMAGE_TYPES)
+
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS

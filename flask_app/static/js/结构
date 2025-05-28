@@ -1,3 +1,4 @@
+1.0
 js/
 ├── globals.js          # 全局变量定义
 ├── utils.js            # 工具函数
