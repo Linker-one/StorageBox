@@ -1,0 +1,86 @@
+.media-viewer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.media-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+}
+
+.media-container img,
+.media-container video {
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    position: absolute;
+    z-index: 1002;
+    object-fit: contain;
+}
+
+.media-viewer button.close {
+    position: absolute;
+    z-index: 1003;
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    top: 20px;
+    right: 20px;
+    background-color: rgba(0, 98, 255, 0.2);
+}
+
+.media-viewer button.close:hover {
+    background-color: rgba(0, 98, 255, 0.4);
+}
+
+.media-viewer button:not(.close) {
+    top: 10%; /* 距离顶部48% */
+    width: 25%; /* 按钮宽度 */
+    height: 80%; /* 按钮高度 */
+    border: none;
+    background: none;
+    position: absolute;
+    z-index: 1003;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.media-viewer button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.media-viewer button.last {
+    left: 0;
+}
+
+.media-viewer button.next {
+    right: 0;
+}
+
+.media-viewer button[disabled] {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.media-viewer .media-container {
+    cursor: pointer;
+}
+
+.loading-indicator {
+    top: 40%;
+    left: 38%;
+    color: white;
+    font-size: 50px;
+    position: absolute;
+    z-index: 1001;
+}

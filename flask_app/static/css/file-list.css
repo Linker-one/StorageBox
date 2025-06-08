@@ -1,14 +1,114 @@
+.content-area {
+    flex: 1; /* 主容器宽度自适应 */
+    position: relative;
+}
+
+.content-areas {
+    height: 100%; /* 主容器高度自适应 */
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;/* 允许垂直滚动 */
+}
+
+.to-top {
+    width: 40px;
+    height: 40px;
+    right: 55px;
+    bottom: 10px;
+    border: none;
+    position: absolute;
+    z-index: 99;
+    border-radius: 20px;
+    background-size: 40px, 40px;
+    background-image: url('../img/to-top.svg');
+    background-color: rgba(0, 0, 0, 0.05);
+    background-position: center;
+}
+
+.to-bottom {
+    width: 40px;
+    height: 40px;
+    right: 15px;
+    bottom: 10px;
+    border: none;
+    z-index: 99;
+    position: absolute;
+    border-radius: 20px;
+    background-size: 40px, 40px;
+    background-image: url('../img/to-bottom.svg');
+    background-color: rgba(0, 0, 0, 0.05);
+    background-position: center;
+}
+
+.to-top:hover,
+.to-bottom:hover {
+    background-color: rgba(0, 38, 255, 0.1);
+}
+
+.file-list-header {
+    display: flex;
+    padding: 5px 10px;
+    background-color: #f3f3f3;
+    border-bottom: 1px solid #d9d9d9;
+    font-weight: bold;
+}
+
+.header-name {
+    width: 40%;
+    max-width: 300px;
+    border-right: 1px solid #d9d9d9;
+    padding-left: 10px;
+}
+
+.header-modified {
+    width: 25%;
+    max-width: 200px;
+    border-right: 1px solid #d9d9d9;
+    padding: 0 5px;
+}
+
+.header-type {
+    width: 20%;
+    max-width: 100px;
+    border-right: 1px solid #d9d9d9;
+    padding: 0 5px;
+}
+
+.header-size {
+    width: 15%;
+    max-width: 100px;
+    padding: 0 5px;
+    padding-right: 10px;
+}
+
+.status-bar {
+    height: 25px;
+    border-top: 1px solid #d9d9d9;
+    display: flex;
+    padding: 0 10px;
+    align-items: center;
+    font-size: 12px;
+}
+
+.status-info {
+    margin-right: 15px;
+}
+
+.status-selected {
+    margin-right: 15px;
+}
 
 .file-list.min-view {
     display: flex; /* 使用 Flexbox 布局 */
+    position: relative;
     flex-direction: column; /* 垂直排列 */
     flex-grow: 1;
-    overflow-y: auto;/* 允许垂直滚动 */
 }
 .file-list.min-view .file-item {
     display: flex;
     width: 100%;
-    padding: 5px 10px;
+    height: 36px;
+    line-height: 36px;
     border-bottom: 1px solid #f0f0f0;
 }
 .file-list.min-view .file-item:hover {
@@ -18,18 +118,24 @@
     background-color: #e5f3ff;
 }
 .file-list.min-view .file-icon {
-    display: none;
+    width: 36px;
+    height: 36px;
+}
+.file-list.min-view .file-icon img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* 保持图片比例 */
 }
 .file-list.min-view .file-name {
-    width: 40%;
-    max-width: 300px;
+    width: 30%;
+    max-width: 274px;
     padding-left: 10px;
     overflow: hidden;
     white-space: nowrap;/* 不换行 */
     text-overflow: ellipsis;/* 省略号效果 */
 }
 .file-list.min-view .file-modified {
-    width: 25%;
+    width: 23%;
     max-width: 200px;
     padding-left: 5px;
     overflow: hidden;
@@ -55,11 +161,10 @@
 
 .file-list.max-view {
     display: grid;
+    position: relative;
     padding: 5px 10px; /* 内边距 */
     width: 100%;
     height: 100%;
-    overflow-y: auto;
-    grid-auto-rows: 256px;
 }
 
 /* 默认移动端视图 - 2列 */
@@ -81,22 +186,30 @@
     }
 }
 
+.file-list.max-view .file-icon {
+    width: 100%;
+    height: 100%;
+}
+
 /* 图片样式 */
 .file-list.max-view .file-icon img {
-    width: 256px;
-    height: 256px;
-    padding: 2px;
-    border: 1px solid #0078d7;
+    width: 100%;
+    height: 100%;
+    border: 2px solid #000000;
     display: block;
-    border-radius: 8px; /* 可选：圆角 */
     object-fit: cover; /* 保持图片比例 */
     transition: transform 0.3s ease; /* 可选：悬停效果 */
+}
+.file-list.max-view .file-icon img[type='img'] {
+    border: 2px solid #0078d7;
+}
+.file-list.max-view .file-icon img[type='video'] {
+    border: 4px solid #6300f7;
 }
 
 /* 可选悬停效果 */
 .file-list.max-view .file-icon img:hover {
-    transform: scale(1.02);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 8px rgba(0, 0, 0, 0.5);
 }
 
 /* 如果需要固定高度的网格 */
@@ -120,6 +233,6 @@
 .file-list.max-view .file-size {
     display: none;
 }
-.file-list.max-view .file-path {
+.file-list.max-view .file-path {    
     display: none;
 }

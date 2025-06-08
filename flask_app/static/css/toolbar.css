@@ -1,0 +1,70 @@
+/* 工具栏容器样式 */
+.toolbar {
+    background: none;               /* 无背景 */
+    border: none;                   /* 无边框 */
+    border-bottom: 1px solid #d9d9d9; /* 底部透明边框 */
+    display: flex;                  /* 使用 Flexbox 布局 */
+    flex-wrap: wrap;
+    align-items: center;            /* 垂直居中对齐 */
+}
+
+/* 工具栏按钮基础样式 */
+.toolbar button {
+    background: none;               /* 无背景 */
+    border: none;                   /* 无边框 */
+    border-bottom: 2px solid transparent; /* 底部透明边框 */
+    cursor: pointer;                /* 鼠标指针变为手型 */
+    display: flex;                  /* 使用 Flexbox 布局 */
+    height: 40px;                     /* 工具栏高度 */
+    width: 40px;                 /* 按钮宽度 */
+    background-repeat: no-repeat;   /* 防止图标重复 */
+    background-position: center 5px; /* 图标位置（居中，距顶部10px） */
+    background-size: 30px 30px;     /* 图标大小（20px x 20px） */
+}
+.toolbar button:hover {
+    background-color: #eeeeee;
+    border-bottom-color: #0078d7; /* 鼠标悬停时背景颜色 */
+}
+/* 工具栏激活按钮样式 */
+.toolbar button.active {
+    border-bottom-color: #0078d7;  /* 底部边框颜色变为蓝色 */
+}
+.toolbar button.copy {
+    background-image: url("../img/copy.svg");
+}
+.toolbar button.cut {
+    background-image: url("../img/cut.svg");
+}
+.toolbar button.paste {
+    background-image: url("../img/paste.svg");
+    border-right: 1px solid #aaaaaa; /* 右侧边框 */
+}
+.toolbar button.create-file {
+    background-image: url("../img/create-file.svg");
+}
+.toolbar button.create-dir {
+    background-image: url("../img/create-dir.svg");
+}
+.toolbar button.rename {
+    background-image: url("../img/rename.svg");
+}
+.toolbar button.delete {
+    background-image: url("../img/delete.svg");
+    border-right: 1px solid #aaaaaa; /* 右侧边框 */
+}
+.toolbar button.max-view {
+    background-image: url("../img/max-view.svg");
+}
+.toolbar button.mid-view {
+    background-image: url("../img/mid-view.svg");
+}
+.toolbar button.min-view {
+    background-image: url("../img/min-view.svg");
+    border-right: 1px solid #aaaaaa; /* 右侧边框 */
+}
+.toolbar button.select {
+    background-image: url("../img/select.svg");
+}
+.toolbar button.select-all {
+    background-image: url("../img/select-all.svg");
+}

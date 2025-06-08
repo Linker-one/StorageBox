@@ -4,10 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>StorageBox</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/window.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/image-viewer.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/video-viewer.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/toolbar.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/navigation.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/sidebar.css')}}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/file-list.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/media-viewer.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/file-operations.css') }}">
 </head>
 <body>
     <div class="file-explorer">
@@ -56,22 +59,16 @@
         <!-- 主内容区 -->
         <div class="main-container">
             <!-- 左侧边栏折叠按钮 -->
-            <div class="sidebar-left-toggle" id="left-toggle">
-                <i class="fas fa-angle-right"></i>
-            </div>
+            <div class="sidebar-left-toggle collapsed"></div>
             <!-- 左侧边栏  -->
             <div class="sidebar left-sidebar collapsed">
-                {% for disk_info in disk_info_list %}
-                    <div class="sidebar-content">
-                        <div class="content-toggle"></div>
-                        <div class="sidebar-item">本地磁盘({{disk_info.device[0]}}:)</div>
-                    </div>
-                {% endfor %}
             </div>
 
             <!-- 内容区域 -->
             <div class="content-area">
                 <div class="content-areas">
+                    <button class="to-top"></button>
+                    <button class="to-bottom"></button>
                     <div class="file-list-header">
                         <div class="header-name">名称</div>
                         <div class="header-modified">修改日期</div>
@@ -84,36 +81,51 @@
             </div>
 
             <!-- 右侧边栏折叠按钮 -->
-            <div class="sidebar-right-toggle" id="right-toggle">
-                <i class="fas fa-angle-left"></i>
-            </div>
+            <div class="sidebar-right-toggle collapsed"></div>
             <!-- 右侧边栏 (默认折叠) -->
             <div class="sidebar right-sidebar collapsed">
                 <div class="sidebar-content">
                     <div class="sidebar-section">
-                        <div class="sidebar-title">详情</div>
                         <div class="sidebar-info">
                             <div class="info-title">名称:</div>
-                            <div class="info-value">参考.png</div>
+                            <div class="info-value" id="detail-name">NULL</div>
                         </div>
                         <div class="sidebar-info">
                             <div class="info-title">类型:</div>
-                            <div class="info-value">PNG 文件</div>
+                            <div class="info-value" id="detail-type">NULL</div>
                         </div>
                         <div class="sidebar-info">
                             <div class="info-title">修改日期:</div>
-                            <div class="info-value">2025/4/26 2:18</div>
+                            <div class="info-value" id="detail-modified">NULL</div>
                         </div>
                         <div class="sidebar-info">
                             <div class="info-title">大小:</div>
-                            <div class="info-value">217 KB</div>
+                            <div class="info-value" id="detail-size">NULL</div>
                         </div>
                     </div>
 
                     <div class="sidebar-section">
-                        <div class="sidebar-title">预览</div>
                         <div class="file-preview">
                             <img src="" alt="预览图" class="preview-image">
+                        </div>
+                    </div>
+
+                    <div class="sidebar-section">
+                        <div class="sidebar-info">
+                            <div class="info-title more">作者:</div>
+                            <div class="info-value more" id="detail-artist">NULL</div>
+                        </div>
+                        <div class="sidebar-info">
+                            <div class="info-title more">内容:</div>
+                            <div class="info-value more" id="detail-character">NULL</div>
+                        </div>
+                        <div class="sidebar-info">
+                            <div class="info-title more">IP:</div>
+                            <div class="info-value more" id="detail-copyright">NULL</div>
+                        </div>
+                        <div class="sidebar-info">
+                            <div class="info-title more">来源:</div>
+                            <div class="info-value more" id="detail-source">NULL</div>
                         </div>
                     </div>
                 </div>

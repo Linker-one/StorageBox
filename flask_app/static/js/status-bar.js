@@ -1,12 +1,21 @@
-import { globalState } from "./globals.js";
+import { getFileList } from "./file-list.js";
+import { getSelectedItemsData, hasSelectedItems } from "./selection.js";
 
 export function updateStatusBar() {
-    const selectedItems = document.querySelectorAll('.file-item.selected').length;
-    
+    const fileList = getFileList();
+
+    if (!hasSelectedItems()) {
+        document.querySelector('.status-info').textContent = `${fileList.length} 个项目`;
+        document.querySelector('.status-selected').textContent = '选中0个项目';
+        document.querySelector('.status-size').textContent = '0 KB';
+        return;
+    }
+    const selectedItems = getSelectedItemsData();
+
     // 计算总大小（这里只计算选中文件的总大小）
     let totalSize = 0;
-    document.querySelectorAll('.file-item.selected').forEach(item => {
-        const sizeText = item.querySelector('.file-size').textContent;
+    selectedItems.forEach(item => {
+        const sizeText = item['size'];
         if (sizeText.includes('KB')) {
             totalSize += parseFloat(sizeText);
         } else if (sizeText.includes('MB')) {
@@ -26,7 +35,7 @@ export function updateStatusBar() {
         sizeText = `${(totalSize / (1024 * 1024)).toFixed(2)} GB`;
     }
     
-    document.querySelector('.status-info').textContent = `${globalState.fileList.length} 个项目`;
-    document.querySelector('.status-selected').textContent = `选中 ${selectedItems} 个项目`;
+    document.querySelector('.status-info').textContent = `${fileList.length} 个项目`;
+    document.querySelector('.status-selected').textContent = `选中 ${selectedItems.length} 个项目`;
     document.querySelector('.status-size').textContent = sizeText;
 }

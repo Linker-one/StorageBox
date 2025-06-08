@@ -1,0 +1,219 @@
+/* ================= 侧边栏折叠按钮 ================== */
+.sidebar-left-toggle,
+.sidebar-right-toggle {
+    top: 45%;/* 垂直居中对齐 */
+    height: 40px;/* 按钮高度 */
+    cursor: pointer;/* 鼠标指针变为手型 */
+    display: flex;/* 使用 Flexbox 布局 */
+    z-index: 100;
+    position: absolute;/* 绝对定位 */
+    object-fit: cover; /* 保持图片比例 */
+    transition: all 0.1s ease;
+    background-size: 40px, 40px;
+    background-color: rgba(0, 0, 0, 0.05);
+    background-position: center;
+}
+
+/* 收起状态 */
+.sidebar-left-toggle.collapsed {
+    width: 20px;
+    left: 0;
+    border-radius: 0 20px 20px 0;
+    background-image: url('../img/right.svg');
+}
+.sidebar-left-toggle.collapsed:hover {
+    width: 40px;
+    border-radius: 20px;
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-right-toggle.collapsed {
+    width: 20px;
+    right: 0;
+    border-radius: 20px 0 0 20px;
+    background-image: url('../img/left.svg');
+}
+.sidebar-right-toggle:hover {
+    width: 40px;
+    border-radius: 20px;
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* 展开状态 */
+.sidebar-left-toggle:not(.collapsed) {
+    width: 20px;
+    left: 180px;
+    border-radius: 20px 0 0 20px;
+    background-image: url("../img/left.svg");
+}
+.sidebar-left-toggle:not(.collapsed):hover {
+    width: 40px;
+    left: 160px;
+    border-radius: 20px;
+}
+
+.sidebar-right-toggle:not(.collapsed) {
+    width: 20px;
+    right: 180px;
+    border-radius: 0 20px 20px 0;
+    background-image: url("../img/right.svg");
+}
+.sidebar-right-toggle:not(.collapsed):hover {
+    width: 40px;
+    right: 160px;
+    border-radius: 20px;
+}
+
+/* ================== 侧边栏通用样式 ================= */
+.sidebar {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: #f9f9f9;
+    overflow-y: auto;/* 允许垂直滚动 */
+    transition: all 0.3s ease;
+}
+
+/* 侧边栏折叠状态 */
+.sidebar.collapsed {
+    width: 0;
+    display: none;
+}
+
+/* ================== 左侧边栏特定样式 ================ */
+.left-sidebar {
+    width: 200px;
+    padding-top: 10px;
+    border-right: 1px solid #d9d9d9;
+}
+
+/* 左侧侧边栏内容 */
+.dir-item {
+    height: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.dir-item-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.dir-item-header:hover {
+    background-color: #e5f3ff;
+}
+
+.dir-item-icon {
+    width: 30px;
+    height: 30px;
+    padding: 15px;
+    background-size: 25px, 25px;
+    background-position: center;
+}
+.dir-item-icon.collapsed {
+    background-image: url('../img/right-grey.svg');
+}
+.dir-item-icon.collapsed:hover {
+    background-image: url('../img/right.svg');
+}
+.dir-item-icon:not(.collapsed) {
+    background-image: url('../img/down-grey.svg');
+}
+.dir-item-icon:not(.collapsed):hover {
+    background-image: url('../img/down.svg');
+}
+
+.dir-item-name {
+    flex-grow: 1;
+    font-weight: bold;
+    height: 30px;
+    line-height: 30px;
+    white-space: nowrap;  /* 禁止换行 */
+    overflow: hidden;/* 隐藏溢出内容 */
+}
+
+/* ==================== 右侧侧边栏 =================== */
+/* 右侧边栏特定样式 */
+.right-sidebar {
+    width: 200px;
+    border-left: 1px solid #d9d9d9;
+}
+
+.sidebar-content {
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-section {
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    border-bottom: 1px solid #d9d9d9;
+}
+
+.sidebar-info {
+    width: 100%;
+    height: auto;
+    padding: 2px 0;
+    display: flex;
+    flex-direction: row;
+}
+
+.info-title {
+    font-weight: bold;
+    color: #666;
+    margin-left: 5px;
+    width: 75px;
+}
+
+.info-value {
+    width: 115px;
+    height: auto;
+    margin-right: 5px;
+    overflow-wrap: break-word;
+}
+
+/* 文件预览区域 */
+.file-preview {
+    padding: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.preview-image {
+    max-width: 100%;
+    max-height: auto;
+    object-fit: contain;
+}
+
+.info-title.more {
+    width: 42px;
+}
+
+.info-value.more {
+    width: auto;
+    max-width: 148px;
+    cursor: pointer;
+    color: #007bff;       /* 默认蓝色 */
+    text-decoration: none;  /* 去除下划线 */
+}
+
+.info-value.more:hover {
+    text-decoration: underline; /* 悬停显示下划线 */
+}
+
+#detail-artist {
+    color: #b82121;
+}
+
+#detail-character {
+    color: #00cf15;
+}
+
+#detail-copyright {
+    color: #b30cb3;
+}

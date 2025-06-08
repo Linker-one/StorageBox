@@ -1,17 +1,23 @@
-import { openImageViewer } from './image-viewer.js';
-import { openVideoViewer } from './video-viewer.js';
+import { config } from './config.js';
+import { navigateToPath } from './navigation.js';
+import { openMediaViewer } from './media-viewer.js';
 
-const IMAGE_TYPES = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'tiff', 'webp'];
-const VIDEO_TYPES = ['mp4', 'webm', 'ogg', 'mov', 'avi', 'mkv', 'flv'];
+export function openFile(item) {
+    const name = item['name'];
+    const path = item['path'];
+    const type = item['type'];
 
-export function openFile(filePath, fileName, fileType) {
-    if (IMAGE_TYPES.includes(fileType)) {
+    if (type === '文件夹') {
+        navigateToPath(`${path}\\${name}`);
+    } else if (type === '本地磁盘') {
+        navigateToPath(name);
+    } else if (config.IMAGE_TYPES.includes(type)) {
         // 如果是图片文件，直接打开图片查看器
-        openImageViewer(filePath, fileName);
+        openMediaViewer(path, name, 'image');
         return;
-    } else if (VIDEO_TYPES.includes(fileType)) {
+    } else if (config.VIDEO_TYPES.includes(type)) {
         // 如果是视频文件，打开视频查看器
-        openVideoViewer(filePath, fileName);
+        openMediaViewer(path, name, 'video');
         return;
     }
 }

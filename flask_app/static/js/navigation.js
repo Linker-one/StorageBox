@@ -1,74 +1,150 @@
 import { APIService } from "./api-service.js";
-import { globalState } from "./globals.js";
 import { updateView } from "./file-list.js";
-import { setAddressPath } from "./utils.js";
 
+// =============== 路径导航、搜索 =============== //
 
-let backBtn, forwardBtn, parentBtn, refreshBtn, addressPath;
+export {
+    initNavigation,
+    navigateToPath,
+    getCurrentPath,
+    searchFile
+}
 
-export function initNavigation() {
-    backBtn = document.querySelector('.dir-navigation .back');
-    forwardBtn = document.querySelector('.dir-navigation .forward');
-    parentBtn = document.querySelector('.dir-navigation .parent');
-    refreshBtn = document.querySelector('.dir-navigation .refresh');
-    addressPath = document.querySelector('.address-bar .address-path');
+let viewHistory = [{path: '\\', search_term: ''}];
+let currentPosition = 0;
 
-    backBtn.addEventListener('click', handleBack);
-    forwardBtn.addEventListener('click', handleForward);
-    parentBtn.addEventListener('click', handleParent);
-    refreshBtn.addEventListener('click', handleRefresh);
-    addressPath.addEventListener('keydown', handleAddressPathKeyDown);
-    addressPath.addEventListener('blur', handleAddressPathBlur);
+const SELECTORS = {
+    BACK_BTN: '.dir-navigation .back',
+    FORWARD_BTN: '.dir-navigation .forward',
+    PARENT_BTN: '.dir-navigation .parent',
+    REFRESH_BTN: '.dir-navigation .refresh',
+    ADDRESS_PATH: '.address-path',
+    SEARCH_BAR: '.search-bar'
+}
+
+const domElements = {
+    backBtn: null,
+    forwardBtn: null,
+    parentBtn: null,
+    refreshBtn: null,
+    addressPath: null,
+    searchBar: null
+}
+
+function initNavigation() {
+    cacheDOMElements();
+    setupEventListeners();
+}
+
+function cacheDOMElements() {
+    domElements.backBtn = document.querySelector(SELECTORS.BACK_BTN);
+    domElements.forwardBtn = document.querySelector(SELECTORS.FORWARD_BTN);
+    domElements.parentBtn = document.querySelector(SELECTORS.PARENT_BTN);
+    domElements.refreshBtn = document.querySelector(SELECTORS.REFRESH_BTN);
+    domElements.addressPath = document.querySelector(SELECTORS.ADDRESS_PATH);
+    domElements.searchBar = document.querySelector(SELECTORS.SEARCH_BAR);
+}
+
+function setupEventListeners() {
+    domElements.backBtn.addEventListener('click', handleBack);
+    domElements.forwardBtn.addEventListener('click', handleForward);
+    domElements.parentBtn.addEventListener('click', handleParent);
+    domElements.refreshBtn.addEventListener('click', handleRefresh);
+    domElements.addressPath.addEventListener('keydown', handleAddressPathKeyDown);
+    domElements.addressPath.addEventListener('blur', handleAddressPathBlur);
+    domElements.addressPath.addEventListener('change', handleAddressPathChange);
+    domElements.searchBar.addEventListener('keydown', handleSearchKeyDown);
+    domElements.searchBar.addEventListener('blur', handleSearchBlur);
 }
 
 function handleBack() {
-    if (globalState.indexPath <= 0) return;
+    if (currentPosition === 0) return;
 
-    globalState.indexPath--;
+    currentPosition--;
+    const isSearch = viewHistory[currentPosition]['search_term'] != '';
 
-    APIService('/get_files', { 'path': globalState.Paths[globalState.indexPath] }, 'POST')
-    .then(response => {
-        globalState.fileList = response;
-        updateView();
-        setAddressPath(addressPath, globalState.Paths[globalState.indexPath]);
-    })
-    .catch(error => {
-        console.error('Error fetching files:', error);
-        globalState.indexPath++;
-    });
+    if (!isSearch) {
+        APIService('/get_files', { path: viewHistory[currentPosition]['path'] }, 'POST')
+        .then(response => {
+            updateView(response);
+            setAddressPath(viewHistory[currentPosition]['path']);
+        })
+        .catch(error => {
+            console.error('Error fetching files:', error);
+            currentPosition++;
+        });
+    } else {
+        const searchTerm = viewHistory[currentPosition['search_term']];
+        setAddressPath('搜索中...');    
+        APIService('/search', {
+            path: viewHistory[currentPosition]['path'], 
+            search_term: searchTerm
+        }, 'POST')
+        .then(response => {
+            updateView(response);
+            setAddressPath(`"${searchTerm}"搜索结果：`);
+        })
+        .catch(err => {
+            setAddressPath(getCurrentPath());
+            alert('搜索失败');
+            console.error('error:', err);
+            currentPosition++;
+        });
+    }
 }
 
 function handleForward() {
-    if (globalState.indexPath >= globalState.Paths.length - 1) return;
+    if (currentPosition === viewHistory.length - 1) return;
 
-    globalState.indexPath++;
+    currentPosition++;
+    const isSearch = viewHistory[currentPosition]['search_term'] != '';
 
-    APIService('/get_files', { 'path': globalState.Paths[globalState.indexPath] }, 'POST')
-    .then(response => {
-        globalState.fileList = response;
-        updateView();
-        setAddressPath(addressPath, globalState.Paths[globalState.indexPath]);
-    })
-    .catch(error => {
-        console.error('Error fetching files:', error);
-        globalState.indexPath--;
-    });
+    if (!isSearch) {
+        APIService('/get_files', { path: viewHistory[currentPosition]['path'] }, 'POST')
+        .then(response => {
+            updateView(response);
+            setAddressPath(viewHistory[currentPosition]['path']);
+        })
+        .catch(error => {
+            console.error('Error fetching files:', error);
+            currentPosition--;
+        });
+    } else {
+        const searchTerm = viewHistory[currentPosition]['search_term'];
+        setAddressPath('搜索中...');
+        APIService('/search', {
+            path: viewHistory[currentPosition]['path'], 
+            search_term: searchTerm
+        }, 'POST')
+        .then(response => {
+            updateView(response);
+            setAddressPath(`"${searchTerm}"搜索结果：`);
+        })
+        .catch(err => {
+            setAddressPath(getCurrentPath());
+            alert('搜索失败');
+            console.error('error:', err);
+            currentPosition--;
+        });
+    }
 }
 
 function handleParent() {
-    if (/^[\/\\]$/.test(globalState.Paths[globalState.indexPath])) return;
+    // 检查文本中是否只有一个/或\，且以/或\结尾
+    if (/^[^\\/]*[\\/]$/.test(viewHistory[currentPosition]['path'])) return;
+    if (viewHistory[currentPosition]['search_term']) return;
 
-    APIService('/get_parent_path_files', { 'path': globalState.Paths[globalState.indexPath] }, 'POST')
+    APIService('/parent_path', { path: viewHistory[currentPosition]['path'] }, 'POST')
     .then(response => {
-        globalState.fileList = response;
-        const parentPath = globalState.fileList.pop();
-        setAddressPath(addressPath, parentPath);
-        for (let i = globalState.Paths.length - 1; i > globalState.indexPath; i--) {
-            globalState.Paths.pop();
+        const parentPath = response['path'];
+        updateView(response['fileList']);
+
+        setAddressPath(parentPath);
+        for (let i = viewHistory.length - 1; i > currentPosition; i--) {
+            viewHistory.pop();
         }
-        globalState.Paths.push(parentPath);
-        globalState.indexPath++;
-        updateView();
+        viewHistory.push({path: parentPath, search_term: ''});
+        currentPosition++;
     })
     .catch(error => {
         console.error('Error fetching parent path files:', error);
@@ -76,42 +152,102 @@ function handleParent() {
 }
 
 function handleRefresh() {
-    APIService('/get_files', { 'path': addressPath.value.trim() }, 'POST')
-    .then(response => {
-        globalState.fileList = response;
-        updateView();
-        if (addressPath.value.trim() !== globalState.Paths[globalState.indexPath]) {
-            globalState.Paths.push(addressPath.value.trim());
-            globalState.indexPath++;
-        }
-    })
-    .catch(error => {
-        console.error('Error refreshing files:', error);
-        alert('刷新失败: ' + error.message);
-    });
+    const inputPath = domElements.addressPath.value.trim();
+    navigateToPath(inputPath);
 }
 
 function handleAddressPathKeyDown(event) {
     if (event.key === 'Enter') {
         event.preventDefault();
-        if (addressPath.value.trim()) {
-            APIService('/get_files', { 'path': addressPath.value.trim() }, 'POST')
-            .then(response => {
-                globalState.fileList = response;
-                updateView();
-                if (addressPath.value.trim() !== globalState.Paths[globalState.indexPath]) {
-                    globalState.Paths.push(addressPath.value.trim());
-                    globalState.indexPath++;
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching files:', error);
-                alert('路径错误或无法访问: ' + error.message);
-            });
-        }
+
+        const inputPath = domElements.addressPath.value.trim();
+        navigateToPath(inputPath);
+    } else if (event.key === 'Escape') {
+        setAddressPath(viewHistory[currentPosition]['path']);
     }
 }
 
+function handleAddressPathChange() {
+    domElements.addressPath.scrollLeft = domElements.addressPath.scrollWidth - domElements.addressPath.clientWidth;
+}
+
 function handleAddressPathBlur() {
-    setAddressPath(addressPath, globalState.Paths[globalState.indexPath]);
+    setAddressPath(viewHistory[currentPosition]['path']);
+}
+
+function handleSearchKeyDown(event) {
+    if (event.key === 'Enter') {
+        event.preventDefault();
+        
+        const search_term = domElements.searchBar.value.trim();
+        searchFile(search_term);
+    } else if (event.key === 'Escape') {
+        domElements.searchBar.value = '';
+    }
+}
+
+function handleSearchBlur() {
+    domElements.searchBar.value = '';
+}
+
+function navigateToPath(dstPath) {
+    dstPath = normalizeSlashes(dstPath);
+    if (dstPath) {
+        APIService('/get_files', { path: dstPath }, 'POST')
+        .then(response => {
+            updateView(response);
+            if (dstPath !== viewHistory[currentPosition]['path']) {
+                for (let i = viewHistory.length - 1; i > currentPosition; i--) {
+                    viewHistory.pop();
+                }
+                viewHistory.push({path: dstPath, search_term: ''});
+                currentPosition++;
+                setAddressPath(dstPath);
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching files:', error);
+            alert('路径错误或无法访问: ' + error.message);
+        });
+    }
+}
+
+function searchFile(searchTerm) {
+    if (!searchTerm || searchTerm === '/' || searchTerm === '\\') return;
+
+    setAddressPath('搜索中...');
+
+    APIService('/search', {
+        path: viewHistory[currentPosition]['path'], 
+        search_term: searchTerm
+    }, 'POST')
+    .then(response => {
+        updateView(response);
+        setAddressPath(`"${searchTerm}"搜索结果：`);
+        for (let i = viewHistory.length - 1; i > currentPosition; i--) {
+            viewHistory.pop();
+        }
+        viewHistory.push({
+            path: viewHistory[currentPosition]['path'],
+            search_term: searchTerm});
+        currentPosition++;
+    })
+    .catch(err => {
+        setAddressPath(getCurrentPath());
+        alert('搜索失败');
+        console.error('error:', err);
+    });
+}
+
+function setAddressPath(path) {
+    domElements.addressPath.value = path;
+}
+
+function getCurrentPath() {
+    return viewHistory[currentPosition]['path'];
+}
+
+function normalizeSlashes(text) {
+    // 将连续的/或\替换为单个\
+    return text.replace(/[\\/]+/g, '\\');
 }

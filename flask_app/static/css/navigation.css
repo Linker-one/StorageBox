@@ -1,0 +1,79 @@
+/* 地址栏样式 */
+.address-bar {
+    width: 100%;                    /* 工具栏宽度 */
+    background: none;               /* 无背景 */
+    border: none;                   /* 无边框 */
+    border-bottom: 1px solid #d9d9d9; /* 底部透明边框 */
+    display: flex;                  /* 使用 Flexbox 布局 */
+    flex-wrap: wrap;
+    align-items: center;            /* 垂直居中对齐 */
+}
+
+.dir-navigation {
+    height: 36px;                     /* 工具栏高度 */
+    background: none;               /* 无背景 */
+    border: none;                   /* 无边框 */
+    display: flex;                  /* 使用 Flexbox 布局 */
+    align-items: center;            /* 垂直居中对齐 */
+}
+
+.dir-navigation button {
+    background: none;               /* 无背景 */
+    border: none;                   /* 无边框 */
+    border-bottom: 2px solid transparent; /* 底部透明边框 */
+    cursor: pointer;                /* 鼠标指针变为手型 */
+    display: flex;                  /* 使用 Flexbox 布局 */
+    height: 100%;                /* 高度填满父元素 */
+    width: 30px;                 /* 按钮宽度 */
+    background-repeat: no-repeat;   /* 防止图标重复 */
+    background-position: center 6px; /* 图标位置（居中，距顶部10px） */
+    background-size: 25px 25px;     /* 图标大小（20px x 20px） */
+}
+.dir-navigation button:hover {
+    background-color: #eeeeee;
+    border-bottom-color: #0078d7; /* 鼠标悬停时背景颜色 */
+}
+.dir-navigation button.back {
+    background-image: url("../img/back.svg");
+}
+.dir-navigation button.forward {
+    background-image: url("../img/forward.svg");
+}
+.dir-navigation button.parent {
+    background-image: url("../img/parent.svg");
+}
+.dir-navigation button.refresh {
+    background-image: url("../img/refresh.svg");
+}
+
+.address-path {
+    height: 26px;
+    width: 50%;/* 地址栏宽度自适应 */
+    min-width: 300px;/* 地址栏最小宽度 */
+    max-width: 800px;/* 地址栏最大宽度 */
+    padding: 0 5px;/* 内边距 */
+    margin: 0 5px;/* 外边距 */
+    border: 1px solid #aaaaaa;/* 边框 */
+    align-items: center;/* 垂直居中对齐 */
+    background: none;/* 无背景 */
+    outline: none;/* 去掉输入框的默认边框 */
+}
+.address-path:focus {
+    border-color: #0078d7;/* 聚焦时边框颜色 */
+    box-shadow: 0 0 5px rgba(0, 120, 215, 0.5);/* 聚焦时阴影效果 */
+}
+.search-bar {
+    height: 26px;
+    width: 20%;/* 搜索框宽度自适应 */
+    min-width: 140px;/* 搜索框宽度 */
+    padding: 0 5px;/* 内边距 */
+    margin: 0 5px;/* 外边距 */
+    border: 1px solid #aaaaaa;/* 边框 */
+    align-items: center;/* 垂直居中对齐 */
+    background: none;/* 无背景 */
+    outline: none;/* 去掉输入框的默认边框 */
+}
+.search-bar:focus {
+    border-color: #0078d7;/* 聚焦时边框颜色 */
+    box-shadow: 0 0 5px rgba(0, 120, 215, 0.5);/* 聚焦时阴影效果 */
+}
