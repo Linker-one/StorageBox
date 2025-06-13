@@ -1,5 +1,5 @@
 import { APIService } from "./api-service.js";
-import { updateView } from "./file-list.js";
+import { updateView, getTopViewItemId } from "./file-list.js";
 
 // =============== 路径导航、搜索 =============== //
 
@@ -10,7 +10,7 @@ export {
     searchFile
 }
 
-let viewHistory = [{path: '\\', search_term: ''}];
+let viewHistory = [{path: '\\', search_term: '', topViewItemId: 0}];
 let currentPosition = 0;
 
 const SELECTORS = {
@@ -60,13 +60,15 @@ function setupEventListeners() {
 function handleBack() {
     if (currentPosition === 0) return;
 
+    viewHistory[currentPosition]['topViewItemId'] = getTopViewItemId();
+
     currentPosition--;
     const isSearch = viewHistory[currentPosition]['search_term'] != '';
 
     if (!isSearch) {
         APIService('/get_files', { path: viewHistory[currentPosition]['path'] }, 'POST')
         .then(response => {
-            updateView(response);
+            updateView(response, viewHistory[currentPosition]['topViewItemId']);
             setAddressPath(viewHistory[currentPosition]['path']);
         })
         .catch(error => {
@@ -81,7 +83,7 @@ function handleBack() {
             search_term: searchTerm
         }, 'POST')
         .then(response => {
-            updateView(response);
+            updateView(response, viewHistory[currentPosition]['topViewItemId']);
             setAddressPath(`"${searchTerm}"搜索结果：`);
         })
         .catch(err => {
@@ -96,13 +98,15 @@ function handleBack() {
 function handleForward() {
     if (currentPosition === viewHistory.length - 1) return;
 
+    viewHistory[currentPosition]['topViewItemId'] = getTopViewItemId();
+
     currentPosition++;
     const isSearch = viewHistory[currentPosition]['search_term'] != '';
 
     if (!isSearch) {
         APIService('/get_files', { path: viewHistory[currentPosition]['path'] }, 'POST')
         .then(response => {
-            updateView(response);
+            updateView(response, viewHistory[currentPosition]['topViewItemId']);
             setAddressPath(viewHistory[currentPosition]['path']);
         })
         .catch(error => {
@@ -117,7 +121,7 @@ function handleForward() {
             search_term: searchTerm
         }, 'POST')
         .then(response => {
-            updateView(response);
+            updateView(response, viewHistory[currentPosition]['topViewItemId']);
             setAddressPath(`"${searchTerm}"搜索结果：`);
         })
         .catch(err => {
@@ -134,17 +138,19 @@ function handleParent() {
     if (/^[^\\/]*[\\/]$/.test(viewHistory[currentPosition]['path'])) return;
     if (viewHistory[currentPosition]['search_term']) return;
 
+    viewHistory[currentPosition]['topViewItemId'] = getTopViewItemId();
+
     APIService('/parent_path', { path: viewHistory[currentPosition]['path'] }, 'POST')
     .then(response => {
         const parentPath = response['path'];
-        updateView(response['fileList']);
 
         setAddressPath(parentPath);
         for (let i = viewHistory.length - 1; i > currentPosition; i--) {
             viewHistory.pop();
         }
-        viewHistory.push({path: parentPath, search_term: ''});
+        viewHistory.push({path: parentPath, search_term: '', topViewItemId: 0});
         currentPosition++;
+        updateView(response['fileList']);
     })
     .catch(error => {
         console.error('Error fetching parent path files:', error);
@@ -193,17 +199,19 @@ function handleSearchBlur() {
 function navigateToPath(dstPath) {
     dstPath = normalizeSlashes(dstPath);
     if (dstPath) {
+        viewHistory[currentPosition]['topViewItemId'] = getTopViewItemId();
+    
         APIService('/get_files', { path: dstPath }, 'POST')
         .then(response => {
-            updateView(response);
             if (dstPath !== viewHistory[currentPosition]['path']) {
                 for (let i = viewHistory.length - 1; i > currentPosition; i--) {
                     viewHistory.pop();
                 }
-                viewHistory.push({path: dstPath, search_term: ''});
+                viewHistory.push({path: dstPath, search_term: '', topViewItemId: 0});
                 currentPosition++;
                 setAddressPath(dstPath);
             }
+            updateView(response);
         })
         .catch(error => {
             console.error('Error fetching files:', error);
@@ -215,6 +223,8 @@ function navigateToPath(dstPath) {
 function searchFile(searchTerm) {
     if (!searchTerm || searchTerm === '/' || searchTerm === '\\') return;
 
+    viewHistory[currentPosition]['topViewItemId'] = getTopViewItemId();
+
     setAddressPath('搜索中...');
 
     APIService('/search', {
@@ -222,15 +232,17 @@ function searchFile(searchTerm) {
         search_term: searchTerm
     }, 'POST')
     .then(response => {
-        updateView(response);
         setAddressPath(`"${searchTerm}"搜索结果：`);
         for (let i = viewHistory.length - 1; i > currentPosition; i--) {
             viewHistory.pop();
         }
         viewHistory.push({
             path: viewHistory[currentPosition]['path'],
-            search_term: searchTerm});
+            search_term: searchTerm,
+            topViewItemId: 0
+        });
         currentPosition++;
+        updateView(response);
     })
     .catch(err => {
         setAddressPath(getCurrentPath());

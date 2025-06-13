@@ -106,8 +106,6 @@ function updateView(newFileList) {
     currentViewMode = getCurrentViewMode();
 
     clearAllSelections();
-    //revokeUnusedBlobUrls();
-    //abortAll();
     domElements.content.innerHTML = '';
 
     if (fileList.length === 0) {
@@ -125,6 +123,7 @@ function toggleView() {
     let itemId, scrollTop = domElements.container.scrollTop;
     nodePool.length = 0;
     domElements.content.innerHTML = '';
+
     if (!scrollTop) {
         currentViewMode = getCurrentViewMode();
         _render(0);
@@ -132,15 +131,12 @@ function toggleView() {
     }
 
     if (currentViewMode === 'max') {
-        let numColumns = Math.max(2, Math.floor(viewportWidth / 256));
-        let rowHeight = viewportWidth / numColumns;
-        let itemRow = Math.floor(scrollTop / rowHeight);
-        itemId = itemRow * numColumns;
-
+        let currnetRow = Math.floor(scrollTop / itemHeight);
+        itemId = currnetRow * numColumns;
     } else if (currentViewMode === 'mid') {
 
     } else if (currentViewMode === 'min') {
-        itemId = Math.floor(scrollTop / 36) + 1;
+        itemId = Math.floor(scrollTop / 36);
     }
 
     currentViewMode = getCurrentViewMode();
@@ -164,12 +160,9 @@ function updateViewToItem(itemId) {
     let scrollHeight, topToItemHeight;
 
     if (currentViewMode === 'max') {
-        let numColumns = Math.max(2, Math.floor(viewportWidth / 256));
-        let numRow = Math.ceil(fileList.length / numColumns);
-        let itemRow = Math.floor((itemId + 1) / numColumns);
-        let rowHeight = viewportWidth / numColumns;
-        scrollHeight = numRow * rowHeight;
-        topToItemHeight = itemRow * rowHeight;
+        let currentRow = Math.ceil((itemId + 1) / numColumns) - 1;
+        scrollHeight = numRow * itemHeight;
+        topToItemHeight = currentRow * itemHeight;
 
     } else if (currentViewMode === 'mid') {
 
